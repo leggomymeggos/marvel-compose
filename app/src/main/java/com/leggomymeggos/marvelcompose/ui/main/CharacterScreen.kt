@@ -1,93 +1,95 @@
 package com.leggomymeggos.marvelcompose.ui.main
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.annotation.ExperimentalCoilApi
+import coil.compose.rememberImagePainter
+import com.airbnb.mvrx.compose.collectAsState
+import com.airbnb.mvrx.compose.mavericksViewModel
 import com.leggomymeggos.marvelcompose.R
-import com.leggomymeggos.marvelcompose.ui.Colors
 import com.leggomymeggos.marvelcompose.data.Character
+import com.leggomymeggos.marvelcompose.ui.components.CenterCircleProgressIndicator
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun CharacterScreen(characterViewModel: CharacterListViewModel = viewModel()) {
-    val characters: List<Character> by characterViewModel.data.observeAsState(listOf())
+fun CharacterScreen(characterViewModel: CharacterListViewModel = mavericksViewModel()) {
+    val state by characterViewModel.collectAsState()
 
-    LazyVerticalGrid(
-        cells = GridCells.Adaptive(minSize = 128.dp),
-    ) {
-        items(characters) { character ->
-            CharacterContent(
-                character = character,
-                onFavorite = { clickedCharacter ->
-                    characterViewModel.toggleFavorite(
-                        clickedCharacter.id
-                    )
-                }
-            )
+    if (state.characterList.isEmpty()) {
+        CenterCircleProgressIndicator()
+    } else {
+        LazyVerticalGrid(cells = GridCells.Adaptive(minSize = 128.dp)) {
+            items(state.characterList) { CharacterContent(character = it) }
         }
     }
 }
 
+@OptIn(ExperimentalCoilApi::class)
 @Composable
-fun CharacterContent(character: Character, onFavorite: (character: Character) -> Unit) {
+fun CharacterContent(character: Character) {
     Card(
         shape = RoundedCornerShape(4.dp),
         elevation = 4.dp,
         modifier = Modifier
             .padding(8.dp)
             .fillMaxWidth()
-            .fillMaxHeight()
+            .height(164.dp)
     ) {
-        Column(
-            modifier = Modifier.padding(4.dp),
-        ) {
-            Text(
-                text = character.name,
-                modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.Center
-            )
-            IconButton(
-                modifier = Modifier.align(alignment = Alignment.End),
-                onClick = { onFavorite(character) }
+        Column {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.75f)
             ) {
-                if (character.favorite) {
-                    FilledStarIcon()
-                } else OutlineStarIcon()
+                Image(
+                    painter = rememberImagePainter(
+                        data = character.thumbnailUrl ?: R.drawable.ic_marvel_logo
+                    ),
+                    contentScale = determineContentScale(character.thumbnailUrl),
+                    contentDescription = character.name,
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .fillMaxWidth()
+                )
             }
+            CenteredOneLineText(text = character.name)
         }
     }
 }
 
-@Composable
-fun OutlineStarIcon() = Icon(
-    painter = painterResource(id = R.drawable.ic_star_outline_24),
-    tint = Color.LightGray,
-    contentDescription = "Not Favorited"
-)
+private fun determineContentScale(thumbnailUrl: String?): ContentScale {
+    return when {
+        thumbnailUrl == null -> ContentScale.Inside
+        thumbnailUrl.contains("not_available") -> ContentScale.FillBounds
+        else -> ContentScale.Crop
+    }
+}
 
 @Composable
-fun FilledStarIcon() = Icon(
-    painter = painterResource(id = R.drawable.ic_star_filled_24),
-    tint = Colors.Gold,
-    contentDescription = "Favorited"
-)
+fun CenteredOneLineText(text: String) {
+    return Text(
+        text = text,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp),
+        textAlign = TextAlign.Center,
+    )
+}

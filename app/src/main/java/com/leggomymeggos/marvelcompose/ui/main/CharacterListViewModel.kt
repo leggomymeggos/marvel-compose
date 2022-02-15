@@ -1,32 +1,38 @@
 package com.leggomymeggos.marvelcompose.ui.main
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
+import com.airbnb.mvrx.MavericksState
+import com.airbnb.mvrx.MavericksViewModel
+import com.airbnb.mvrx.MavericksViewModelFactory
+import com.airbnb.mvrx.hilt.AssistedViewModelFactory
+import com.airbnb.mvrx.hilt.hiltMavericksViewModelFactory
 import com.leggomymeggos.marvelcompose.data.Character
+import com.leggomymeggos.marvelcompose.data.CharacterUseCase
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
+import kotlinx.coroutines.launch
 
-class CharacterListViewModel : ViewModel() {
-    private val characters = mutableListOf(
-        Character(id = 1, name = "Spider-Man", favorite = true),
-        Character(id = 2, name = "Venom", favorite = false),
-        Character(id = 3, name = "Iron Man", favorite = false),
-        Character(id = 4, name = "Thor", favorite = true),
-        Character(id = 5, name = "Scarlet Witch", favorite = true),
-        Character(id = 6, name = "Photon", favorite = false),
-    )
-    private val _data = MutableLiveData(characters)
-    val data: LiveData<List<Character>> = Transformations.map(_data) {
-        it.map { character -> character }
+class CharacterListViewModel @AssistedInject constructor(
+    @Assisted initialState: State,
+    private val characterUseCase: CharacterUseCase
+) : MavericksViewModel<State>(initialState) {
+
+    @AssistedFactory
+    interface Factory : AssistedViewModelFactory<CharacterListViewModel, State> {
+        override fun create(state: State): CharacterListViewModel
     }
 
-    fun toggleFavorite(characterId: Int) {
-        val index = characters.indexOfFirst { it.id == characterId }
-        val characterToUpdate = characters.first { it.id == characterId }
+    companion object : MavericksViewModelFactory<CharacterListViewModel, State> by hiltMavericksViewModelFactory()
 
-        characters.removeAt(index)
-        characters.add(index, characterToUpdate.copy(favorite = !characterToUpdate.favorite))
+    init {
+        viewModelScope.launch {
+            val characters = characterUseCase.getCharacters()
 
-        _data.postValue(characters)
+            setState {
+                copy(characterList = characters)
+            }
+        }
     }
 }
+
+data class State(val characterList: List<Character> = listOf()) : MavericksState
