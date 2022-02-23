@@ -14,6 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -29,12 +30,13 @@ import com.leggomymeggos.marvelcompose.ui.components.CenterCircleProgressIndicat
 @Composable
 fun CharacterScreen(viewModel: CharacterListViewModel = mavericksViewModel()) {
     val state by viewModel.collectAsState()
+    val characterList = state.characterList
 
-    if (state.characterList.isEmpty()) {
-        CenterCircleProgressIndicator()
+    if (characterList.isEmpty()) {
+        CenterCircleProgressIndicator(modifier = Modifier.testTag("progressBar"))
     } else {
         LazyVerticalGrid(cells = GridCells.Adaptive(minSize = 128.dp)) {
-            items(state.characterList) { CharacterContent(character = it) }
+            items(characterList) { CharacterContent(character = it) }
         }
     }
 }

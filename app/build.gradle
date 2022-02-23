@@ -53,8 +53,11 @@ android {
         exclude("META-INF/*.kotlin_module")
     }
     testOptions {
-        unitTests.all {
-            useJUnitPlatform()
+        unitTests {
+            includeAndroidResources = true
+            all {
+                useJUnitPlatform()
+            }
         }
     }
 }
@@ -116,6 +119,8 @@ dependencies {
     testImplementation "androidx.test:core:1.4.0"
     testImplementation "androidx.test:rules:1.4.0"
     testImplementation "androidx.arch.core:core-testing:2.1.0"
+    debugImplementation "com.airbnb.android:mavericks-launcher:2.6.0"
+    debugImplementation "com.airbnb.android:mavericks-mocking:2.6.0"
     testImplementation "com.airbnb.android:mavericks-testing:2.6.0"
     testImplementation "org.amshove.kluent:kluent-android:1.64"
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.2"

@@ -5,14 +5,15 @@ import coil.ImageLoader
 import coil.ImageLoaderFactory
 import coil.util.CoilUtils
 import com.airbnb.mvrx.Mavericks
+import com.airbnb.mvrx.mocking.MockableMavericks
 import dagger.hilt.android.HiltAndroidApp
 import okhttp3.OkHttpClient
 
 @HiltAndroidApp
-class MainApplication : Application(), ImageLoaderFactory {
+open class MainApplication : Application(), ImageLoaderFactory {
     override fun onCreate() {
         super.onCreate()
-        Mavericks.initialize(this)
+        MockableMavericks.initialize(this)
     }
 
     override fun newImageLoader(): ImageLoader {
