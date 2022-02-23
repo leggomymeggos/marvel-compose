@@ -27,8 +27,8 @@ import com.leggomymeggos.marvelcompose.ui.components.CenterCircleProgressIndicat
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun CharacterScreen(characterViewModel: CharacterListViewModel = mavericksViewModel()) {
-    val state by characterViewModel.collectAsState()
+fun CharacterScreen(viewModel: CharacterListViewModel = mavericksViewModel()) {
+    val state by viewModel.collectAsState()
 
     if (state.characterList.isEmpty()) {
         CenterCircleProgressIndicator()
@@ -41,11 +41,11 @@ fun CharacterScreen(characterViewModel: CharacterListViewModel = mavericksViewMo
 
 @OptIn(ExperimentalCoilApi::class)
 @Composable
-fun CharacterContent(character: Character) {
+fun CharacterContent(character: Character, modifier: Modifier = Modifier) {
     Card(
         shape = RoundedCornerShape(4.dp),
         elevation = 4.dp,
-        modifier = Modifier
+        modifier = modifier
             .padding(8.dp)
             .fillMaxWidth()
             .height(164.dp)
@@ -82,12 +82,12 @@ private fun determineContentScale(thumbnailUrl: String?): ContentScale {
 }
 
 @Composable
-fun CenteredOneLineText(text: String) {
+fun CenteredOneLineText(text: String, modifier: Modifier = Modifier) {
     return Text(
         text = text,
         maxLines = 1,
         overflow = TextOverflow.Ellipsis,
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(8.dp),
         textAlign = TextAlign.Center,
