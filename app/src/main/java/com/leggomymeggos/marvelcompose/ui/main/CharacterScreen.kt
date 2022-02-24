@@ -10,6 +10,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -18,6 +19,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.airbnb.mvrx.compose.collectAsState
@@ -30,6 +32,21 @@ import com.leggomymeggos.marvelcompose.ui.components.CenterCircleProgressIndicat
 @Composable
 fun CharacterScreen(viewModel: CharacterListViewModel = mavericksViewModel()) {
     val state by viewModel.collectAsState()
+    val characterList = state.characterList
+
+    if (characterList.isEmpty()) {
+        CenterCircleProgressIndicator(modifier = Modifier.testTag("progressBar"))
+    } else {
+        LazyVerticalGrid(cells = GridCells.Adaptive(minSize = 128.dp)) {
+            items(characterList) { CharacterContent(character = it) }
+        }
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun CharacterScreenNonMavericks(listViewModel: NonMavericksCharacterListViewModel = viewModel()) {
+    val state by listViewModel.state.collectAsState()
     val characterList = state.characterList
 
     if (characterList.isEmpty()) {
