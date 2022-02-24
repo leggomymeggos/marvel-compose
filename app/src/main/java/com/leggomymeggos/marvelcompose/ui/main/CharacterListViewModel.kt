@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class CharacterListViewModel @AssistedInject constructor(
+open class CharacterListViewModel @AssistedInject constructor(
     @Assisted initialState: State,
     private val characterUseCase: CharacterUseCase
 ) : MavericksViewModel<State>(initialState) {

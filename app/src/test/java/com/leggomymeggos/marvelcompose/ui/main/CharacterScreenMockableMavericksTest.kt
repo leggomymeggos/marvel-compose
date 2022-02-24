@@ -1,11 +1,9 @@
 package com.leggomymeggos.marvelcompose.ui.main
 
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import com.leggomymeggos.marvelcompose.MainApplication
 import com.leggomymeggos.marvelcompose.MavericksTestActivity
 import com.leggomymeggos.marvelcompose.MavericksTestApplication
 import org.junit.Rule
@@ -20,7 +18,7 @@ import org.robolectric.annotation.Config
     sdk = [28],
     application = MavericksTestApplication::class
 )
-class CharacterScreenTest {
+class CharacterScreenMockableMavericksTest {
 
     @get:Rule
     val rule = createAndroidComposeRule<MavericksTestActivity>()
