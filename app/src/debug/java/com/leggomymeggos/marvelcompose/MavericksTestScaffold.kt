@@ -51,7 +51,7 @@ class MavericksTestFragment : Fragment(), MockableMavericksView {
 
         return ComposeView(requireContext()).apply {
             setContent {
-                CharacterScreen(viewModel)
+                CharacterScreen(1f, viewModel)
             }
         }
     }

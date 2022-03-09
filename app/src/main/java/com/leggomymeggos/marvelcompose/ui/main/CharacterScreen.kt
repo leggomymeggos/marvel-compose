@@ -30,14 +30,16 @@ import com.leggomymeggos.marvelcompose.ui.components.CenterCircleProgressIndicat
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun CharacterScreen(viewModel: CharacterListViewModel = mavericksViewModel()) {
+fun CharacterScreen(fontScale: Float, viewModel: CharacterListViewModel = mavericksViewModel()) {
     val state by viewModel.collectAsState()
     val characterList = state.characterList
+
+    val minSize = fontScale * 128f
 
     if (characterList.isEmpty()) {
         CenterCircleProgressIndicator(modifier = Modifier.testTag("progressBar"))
     } else {
-        LazyVerticalGrid(cells = GridCells.Adaptive(minSize = 128.dp)) {
+        LazyVerticalGrid(cells = GridCells.Adaptive(minSize = minSize.dp)) {
             items(characterList) { CharacterContent(character = it) }
         }
     }
