@@ -1,6 +1,5 @@
 package com.leggomymeggos.marvelcompose
 
-import android.app.Application
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.LayoutInflater
@@ -10,11 +9,8 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import com.airbnb.mvrx.fragmentViewModel
-import com.airbnb.mvrx.launcher.MavericksLauncherActivity
-import com.airbnb.mvrx.launcher.MavericksLauncherFragment
 import com.airbnb.mvrx.launcher.MavericksLauncherMockActivity
 import com.airbnb.mvrx.mocking.MavericksViewMocks
-import com.airbnb.mvrx.mocking.MockableMavericks
 import com.airbnb.mvrx.mocking.MockableMavericksView
 import com.airbnb.mvrx.mocking.mockSingleViewModel
 import com.leggomymeggos.marvelcompose.data.Character
@@ -51,7 +47,7 @@ class MavericksTestFragment : Fragment(), MockableMavericksView {
 
         return ComposeView(requireContext()).apply {
             setContent {
-                CharacterScreen(1f, viewModel)
+                CharacterScreen(viewModel)
             }
         }
     }

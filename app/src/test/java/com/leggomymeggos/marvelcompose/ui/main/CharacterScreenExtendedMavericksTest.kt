@@ -23,14 +23,14 @@ class CharacterScreenExtendedMavericksTest {
 
     @Test
     fun `when the character list is empty, then a progress bar is shown`() {
-        rule.setContent { CharacterScreen(1f, viewModel) }
+        rule.setContent { CharacterScreen(viewModel) }
 
         rule.onNodeWithTag("progressBar").assertExists()
     }
 
     @Test
     fun `when the character list is loaded, then the characters are shown`() {
-        rule.setContent { CharacterScreen(1f, viewModel) }
+        rule.setContent { CharacterScreen(viewModel) }
 
         viewModel.setCharacters(listOf(
             Character(id = 1, name = "Spider-Man", thumbnailUrl = null),

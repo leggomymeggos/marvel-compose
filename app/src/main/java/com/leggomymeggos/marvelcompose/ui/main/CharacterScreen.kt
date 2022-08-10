@@ -15,6 +15,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -28,34 +29,34 @@ import com.leggomymeggos.marvelcompose.R
 import com.leggomymeggos.marvelcompose.data.Character
 import com.leggomymeggos.marvelcompose.ui.components.CenterCircleProgressIndicator
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun CharacterScreen(fontScale: Float, viewModel: CharacterListViewModel = mavericksViewModel()) {
+fun CharacterScreen(viewModel: CharacterListViewModel = mavericksViewModel()) {
     val state by viewModel.collectAsState()
-    val characterList = state.characterList
 
-    val minSize = fontScale * 128f
+    CharacterGrid(state.characterList)
+}
 
-    if (characterList.isEmpty()) {
-        CenterCircleProgressIndicator(modifier = Modifier.testTag("progressBar"))
-    } else {
-        LazyVerticalGrid(cells = GridCells.Adaptive(minSize = minSize.dp)) {
-            items(characterList) { CharacterContent(character = it) }
-        }
-    }
+@Composable
+fun CharacterScreenNonMavericks(listViewModel: NonMavericksCharacterListViewModel = viewModel()) {
+    val state by listViewModel.state.collectAsState()
+
+    CharacterGrid(state.characterList)
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun CharacterScreenNonMavericks(listViewModel: NonMavericksCharacterListViewModel = viewModel()) {
-    val state by listViewModel.state.collectAsState()
-    val characterList = state.characterList
-
+fun CharacterGrid(characterList: List<Character>) {
     if (characterList.isEmpty()) {
         CenterCircleProgressIndicator(modifier = Modifier.testTag("progressBar"))
     } else {
-        LazyVerticalGrid(cells = GridCells.Adaptive(minSize = 128.dp)) {
-            items(characterList) { CharacterContent(character = it) }
+        // This allows the cards to grow as the font scale grows, which will
+        // enable users needing a higher font size to still read the character names
+        val fontScale = LocalContext.current.resources.configuration.fontScale
+        val minCardWidth = fontScale * 128f
+        val cardHeight = fontScale * 164f
+
+        LazyVerticalGrid(cells = GridCells.Adaptive(minSize = minCardWidth.dp)) {
+            items(characterList) { CharacterContent(character = it, modifier = Modifier.height(cardHeight.dp)) }
         }
     }
 }
@@ -69,7 +70,6 @@ fun CharacterContent(character: Character, modifier: Modifier = Modifier) {
         modifier = modifier
             .padding(8.dp)
             .fillMaxWidth()
-            .height(164.dp)
     ) {
         Column {
             Box(
