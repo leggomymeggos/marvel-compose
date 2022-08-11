@@ -3,12 +3,12 @@ package com.leggomymeggos.marvelcompose
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
+import com.leggomymeggos.marvelcompose.theme.AppTheme
 import com.leggomymeggos.marvelcompose.ui.main.CharacterScreen
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -23,7 +23,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MainActivityComposable() {
-    MaterialTheme {
+    AppTheme.invoke() {
         Scaffold(
             topBar = {
                 TopAppBar(

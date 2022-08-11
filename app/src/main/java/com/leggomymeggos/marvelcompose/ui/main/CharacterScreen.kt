@@ -3,12 +3,12 @@ package com.leggomymeggos.marvelcompose.ui.main
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.GridCells
-import androidx.compose.foundation.lazy.LazyVerticalGrid
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Card
 import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -27,6 +27,7 @@ import com.airbnb.mvrx.compose.collectAsState
 import com.airbnb.mvrx.compose.mavericksViewModel
 import com.leggomymeggos.marvelcompose.R
 import com.leggomymeggos.marvelcompose.data.Character
+import com.leggomymeggos.marvelcompose.theme.AppTheme
 import com.leggomymeggos.marvelcompose.ui.components.CenterCircleProgressIndicator
 
 @Composable
@@ -55,8 +56,27 @@ fun CharacterGrid(characterList: List<Character>) {
         val minCardWidth = fontScale * 128f
         val cardHeight = fontScale * 164f
 
-        LazyVerticalGrid(cells = GridCells.Adaptive(minSize = minCardWidth.dp)) {
-            items(characterList) { CharacterContent(character = it, modifier = Modifier.height(cardHeight.dp)) }
+        LazyVerticalGrid(
+            cells = GridCells.Adaptive(minSize = minCardWidth.dp)
+        ) {
+            items(characterList.subList(0, characterList.size - 1)) {
+                CharacterContent(
+                    character = it,
+                    modifier = Modifier.height(cardHeight.dp)
+                )
+            }
+            // todo always take up full width
+            item(span = { GridItemSpan(maxCurrentLineSpan) }) {
+                TextButton(
+                    modifier = Modifier.padding(horizontal = 8.dp),
+                    onClick = { /*TODO*/ },
+                    colors = ButtonDefaults.textButtonColors(
+                        contentColor = AppTheme.colors.tertiary
+                    )
+                ) {
+                    Text("Load more")
+                }
+            }
         }
     }
 }
