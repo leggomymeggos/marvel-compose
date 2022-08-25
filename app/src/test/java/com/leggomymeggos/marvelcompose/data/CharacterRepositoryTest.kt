@@ -18,7 +18,7 @@ import org.junit.Test
 class CharacterRepositoryTest {
 
     private val marvelService = mockk<MarvelService> {
-        coEvery { getCharacters() } returns mockk {
+        coEvery { getCharacters(any(), any()) } returns mockk {
             every { isSuccessful } returns true
             every { body() } returns CharacterDataWrapper(
                 code = null,
@@ -31,10 +31,19 @@ class CharacterRepositoryTest {
     private val subject = CharacterRepository(marvelService)
 
     @Test
-    fun `fetchCharacters gets characters from marvelService`() = runBlocking<Unit> {
+    fun `fetchCharacters gets characters from marvelService`() = runBlocking {
         subject.fetchCharacters()
 
-        coVerify { marvelService.getCharacters() }
+        coVerify { marvelService.getCharacters(offset = 0, limit = 20) }
+    }
+
+    @Test
+    fun `fetchCharacters passes through the correct offset for different page numbers`() = runBlocking {
+        subject.fetchCharacters(pageNumber = 3)
+        coVerify { marvelService.getCharacters(offset = 40) }
+
+        subject.fetchCharacters(pageNumber = 2)
+        coVerify { marvelService.getCharacters(offset = 20) }
     }
 
     @Test

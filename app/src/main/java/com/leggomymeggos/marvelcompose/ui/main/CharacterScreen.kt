@@ -37,19 +37,21 @@ import com.leggomymeggos.marvelcompose.ui.components.CenterCircleProgressIndicat
 fun CharacterScreen(viewModel: CharacterListViewModel = mavericksViewModel()) {
     val state by viewModel.collectAsState()
 
-    CharacterGrid(state.characterList)
+    CharacterGrid(state.characterList, onLoadMore = {
+        viewModel.dispatch(CharacterAction.LoadNextPage)
+    })              
 }
 
 @Composable
 fun CharacterScreenNonMavericks(listViewModel: NonMavericksCharacterListViewModel = viewModel()) {
     val state by listViewModel.state.collectAsState()
 
-    CharacterGrid(state.characterList)
+    CharacterGrid(state.characterList, onLoadMore = { listViewModel.dispatch(CharacterAction.LoadNextPage) })
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun CharacterGrid(characterList: List<Character>) {
+fun CharacterGrid(characterList: List<Character>, onLoadMore: () -> Unit) {
     if (characterList.isEmpty()) {
         CenterCircleProgressIndicator(modifier = Modifier.testTag("progressBar"))
     } else {
@@ -68,11 +70,14 @@ fun CharacterGrid(characterList: List<Character>) {
                     modifier = Modifier.height(cardHeight.dp)
                 )
             }
-            // todo always take up full width
-            item(span = { GridItemSpan(maxCurrentLineSpan) }) {
+            item(span = {
+                // always take up the full width of the screen. There should not be > 50 items
+                // on the screen
+                GridItemSpan(50)
+            }) {
                 TextButton(
                     modifier = Modifier.padding(horizontal = 8.dp),
-                    onClick = { /*TODO*/ },
+                    onClick = { onLoadMore() },
                     colors = ButtonDefaults.textButtonColors(
                         contentColor = AppTheme.colors.tertiary
                     )

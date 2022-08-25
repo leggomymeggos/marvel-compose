@@ -5,8 +5,8 @@ import okhttp3.HttpUrl.Companion.toHttpUrl
 import javax.inject.Inject
 
 class CharacterUseCase @Inject constructor(private val characterRepository: CharacterRepository) {
-    suspend fun getCharacters(): List<Character> {
-        return characterRepository.fetchCharacters().map { character ->
+    suspend fun getCharacters(pageNumber: Int = 1): List<Character> {
+        return characterRepository.fetchCharacters(pageNumber).map { character ->
             Character(
                 character.id ?: -1,
                 character.name ?: "",

@@ -1,12 +1,8 @@
 package com.leggomymeggos.marvelcompose.ui.main
 
-import android.os.Build
-import android.os.Build.VERSION.SDK
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
-import com.leggomymeggos.marvelcompose.MavericksTestActivity
 import com.leggomymeggos.marvelcompose.data.Character
 import org.junit.Rule
 import org.junit.Test

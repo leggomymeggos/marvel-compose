@@ -1,12 +1,11 @@
 package com.leggomymeggos.marvelcompose.ui.main
 
-import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.compose.ui.test.onNodeWithTag
-import androidx.compose.ui.test.onNodeWithText
 import com.leggomymeggos.marvelcompose.data.Character
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.junit.Rule
 import org.junit.Test
@@ -21,7 +20,7 @@ class CharacterScreenNonMavericksTest {
     val rule = createComposeRule()
 
     private val stateFlow = MutableStateFlow(State())
-    private val viewModel = mockk<NonMavericksCharacterListViewModel> {
+    private val viewModel = mockk<NonMavericksCharacterListViewModel>(relaxed = true) {
         every { state } returns stateFlow
     }
 
@@ -45,6 +44,20 @@ class CharacterScreenNonMavericksTest {
 
         rule.onNodeWithText("Spider-Man").assertIsDisplayed()
         rule.onNodeWithText("Venom").assertIsDisplayed()
+        rule.onNodeWithText("Load more").assertIsDisplayed().assertIsEnabled()
         rule.onNodeWithTag("progressBar").assertDoesNotExist()
+    }
+
+    @Test
+    fun `when 'Load more' is clicked, then the next page is requested`() {
+        rule.setContent { CharacterScreenNonMavericks(viewModel) }
+
+        stateFlow.compareAndSet(stateFlow.value, State(listOf(
+            Character(id = 1, name = "Spider-Man", thumbnailUrl = null),
+            Character(id = 2, name = "Venom", thumbnailUrl = null)
+        )))
+
+        rule.onNodeWithText("Load more").performClick()
+        verify { viewModel.dispatch(CharacterAction.LoadNextPage) }
     }
 }

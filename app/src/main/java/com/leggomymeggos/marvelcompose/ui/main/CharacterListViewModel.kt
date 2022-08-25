@@ -39,21 +39,68 @@ open class CharacterListViewModel @AssistedInject constructor(
             }
         }
     }
+
+    open fun dispatch(action: CharacterAction) {
+        when (action) {
+            is CharacterAction.LoadNextPage -> loadNextPage()
+        }
+    }
+
+    private fun loadNextPage() {
+        withState {
+            viewModelScope.launch {
+                val additionalCharacters = characterUseCase.getCharacters(it.currentPage + 1)
+                val newCharacters = it.characterList.toMutableList()
+                newCharacters.addAll(additionalCharacters)
+                setState {
+                    copy(
+                        characterList = newCharacters,
+                        currentPage = it.currentPage + 1
+                    )
+                }
+            }
+        }
+    }
+}
+
+sealed class CharacterAction {
+    object LoadNextPage : CharacterAction()
 }
 
 @HiltViewModel
 class NonMavericksCharacterListViewModel @Inject constructor(
     private val characterUseCase: CharacterUseCase
-): ViewModel()  {
+) : ViewModel() {
 
     private val _state: MutableStateFlow<State> = MutableStateFlow(State())
     val state: StateFlow<State> = _state
+
     init {
         viewModelScope.launch {
             val characters = characterUseCase.getCharacters()
             _state.emit(State(characters))
         }
     }
+
+    fun dispatch(action: CharacterAction) {
+        when (action) {
+            is CharacterAction.LoadNextPage -> loadNextPage()
+        }
+    }
+
+    private fun loadNextPage() {
+        viewModelScope.launch {
+            val additionalCharacters = characterUseCase.getCharacters(_state.value.currentPage + 1)
+            val newCharacters = _state.value.characterList.toMutableList()
+            newCharacters.addAll(additionalCharacters)
+            _state.emit(
+                State(characterList = newCharacters, currentPage = _state.value.currentPage + 1)
+            )
+        }
+    }
 }
 
-data class State(val characterList: List<Character> = listOf()) : MavericksState
+data class State(
+    val characterList: List<Character> = listOf(),
+    val currentPage: Int = 1
+) : MavericksState
