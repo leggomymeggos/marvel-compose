@@ -30,7 +30,7 @@ fun MainActivityComposable() {
                     title = { Text(text = stringResource(R.string.app_name)) }
                 )
             }
-        ) {
+        ) { padding ->
             CharacterScreen()
         }
     }

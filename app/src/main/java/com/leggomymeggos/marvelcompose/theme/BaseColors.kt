@@ -12,9 +12,17 @@ internal object BaseColors {
     val OrangeLight = Color(0xffffbd45)
     val OrangeDark = Color(0xffc25e00)
 
+    val Green = Color(0xff00d82b)
+    val GreenLight = Color(0xff65ff61)
+    val GreenDark = Color(0xff00a500)
+
     val Blue = Color(0xff26c6da)
     val BlueLight = Color(0xff6ff9ff)
     val BlueDark = Color(0xff0095a8)
+
+    val Purple = Color(0xff7411ff)
+    val PurpleLight = Color(0xffaf50ff)
+    val PurpleDark = Color(0xff2d00ca)
 
     val White = Color(0xfffefefe)
     val Black = Color(0xff010101)

@@ -3,7 +3,10 @@ package com.leggomymeggos.marvelcompose.ui.main
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.*
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Card
@@ -54,12 +57,12 @@ fun CharacterGrid(characterList: List<Character>) {
         // enable users needing a higher font size to still read the character names
         val fontScale = LocalContext.current.resources.configuration.fontScale
         val minCardWidth = fontScale * 128f
-        val cardHeight = fontScale * 164f
+        val cardHeight = fontScale * 180f
 
         LazyVerticalGrid(
-            cells = GridCells.Adaptive(minSize = minCardWidth.dp)
+            columns = GridCells.Adaptive(minSize = minCardWidth.dp)
         ) {
-            items(characterList.subList(0, characterList.size - 1)) {
+            items(characterList/*.subList(0, characterList.size - 1)*/) {
                 CharacterContent(
                     character = it,
                     modifier = Modifier.height(cardHeight.dp)
